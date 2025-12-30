@@ -1,5 +1,5 @@
-// Change this to your Railway backend host (FastAPI)
-const API_BASE = "https://car-rental-system-production-d3a0.up.railway.app";
+// Use your custom domain (same parent domain as the cookie)
+const API_BASE = "https://app.keseftravel.com";
 
 const form = document.getElementById("loginForm");
 const msg = document.getElementById("msg");
@@ -22,7 +22,7 @@ form.addEventListener("submit", async (e) => {
     const r = await fetch(`${API_BASE}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      credentials: "include", // REQUIRED so cookie is set
+      credentials: "include",
       body: JSON.stringify({ email, password })
     });
 
@@ -33,7 +33,7 @@ form.addEventListener("submit", async (e) => {
     }
 
     setMsg("Logged in. Redirecting…", "ok");
-    window.location.href = `${API_BASE}/`; // or https://app.keseftravel.com/cards
+    window.location.href = "https://app.keseftravel.com/cards";
   } catch (err) {
     setMsg("Network error. Check API_BASE and that the backend is online.", "err");
   } finally {
