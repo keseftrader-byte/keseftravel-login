@@ -1,5 +1,5 @@
 // Change this to your Railway backend host (FastAPI)
-const API_BASE = "https://app.keseftravel.com";
+const API_BASE = "https://car-rental-system-production-d3a0.up.railway.app";
 
 const form = document.getElementById("loginForm");
 const msg = document.getElementById("msg");
