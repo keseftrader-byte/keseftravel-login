@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kesef Travel — Login</title>
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Arial;margin:0;display:flex;min-height:100vh;align-items:center;justify-content:center;background:#f6f7fb}
+    .card{width:380px;max-width:92vw;background:#fff;border:1px solid #e6e8ef;border-radius:14px;padding:22px;box-shadow:0 10px 30px rgba(0,0,0,.06)}
+    h1{font-size:18px;margin:0 0 14px}
+    label{display:block;font-size:12px;margin:12px 0 6px;color:#333}
+    input{width:100%;padding:10px 12px;border:1px solid #d6d9e3;border-radius:10px;font-size:14px}
+    button{margin-top:16px;width:100%;padding:10px 12px;border:0;border-radius:10px;font-size:14px;cursor:pointer}
+    .err{margin-top:12px;color:#b00020;font-size:13px;min-height:18px}
+    .muted{margin-top:12px;color:#666;font-size:12px}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Kesef Travel — System Login</h1>
+
+    <label>Email</label>
+    <input id="email" type="email" autocomplete="username" />
+
+    <label>Password</label>
+    <input id="password" type="password" autocomplete="current-password" />
+
+    <button id="btn">Log In</button>
+    <div class="err" id="err"></div>
+
+    <div class="muted">Authorized access only.</div>
+  </div>
+
+<script>
+const API_BASE = "https://app.keseftravel.com";
+
+document.getElementById("btn").addEventListener("click", async () => {
+  const err = document.getElementById("err");
+  err.textContent = "";
+
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+
+  try {
+    const res = await fetch(`${API_BASE}/auth/login`, {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      credentials: "include",
+      body: JSON.stringify({email, password})
+    });
+
+    if (!res.ok) {
+      err.textContent = "Login failed.";
+      return;
+    }
+
+    const data = await res.json();
+    window.location.href = `${API_BASE}${data.redirect || "/cards"}`;
+  } catch (e) {
+    err.textContent = "Network error.";
+  }
+});
+</script>
+</body>
+</html>
