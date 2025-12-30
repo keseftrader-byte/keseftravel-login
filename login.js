@@ -32,7 +32,6 @@ form.addEventListener("submit", async (e) => {
       return;
     }
 
-    
     setMsg("Logged in. Redirecting…", "ok");
     window.location.href = `${API_BASE}/`; // or https://app.keseftravel.com/cards
   } catch (err) {
