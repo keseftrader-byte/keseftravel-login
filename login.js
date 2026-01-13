@@ -1,5 +1,5 @@
-// Use your custom domain (same parent domain as the cookie)
-const API_BASE = "https://app.keseftravel.com";
+// login.js (updated to handle 303 redirect as success)
+const API_BASE = "https://app.keseftravel.com";  // your Cloudflare domain
 
 const form = document.getElementById("loginForm");
 const msg = document.getElementById("msg");
@@ -26,16 +26,28 @@ form.addEventListener("submit", async (e) => {
       body: JSON.stringify({ email, password })
     });
 
-    if (!r.ok) {
-      const t = await r.text().catch(() => "");
-      setMsg(`Login failed (${r.status}). ${t}`.trim(), "err");
+    // Success: 303 (redirect) or 200-299 range
+    if (r.status >= 200 && r.status < 400) {  // covers 200-399 (including 303)
+      setMsg("Logged in. Redirecting…", "ok");
+      
+      // Let browser follow the 303 redirect automatically
+      window.location.href = r.url || `${API_BASE}/cards`;  // fallback to /cards
       return;
     }
 
-    setMsg("Logged in. Redirecting…", "ok");
-    window.location.href = "https://app.keseftravel.com/cards";
+    // Error handling
+    let errorText = "";
+    try {
+      const errorJson = await r.json();
+      errorText = errorJson.detail || (typeof errorJson === 'string' ? errorJson : JSON.stringify(errorJson));
+    } catch {
+      errorText = await r.text().catch(() => r.statusText || "");
+    }
+
+    setMsg(`Login failed (${r.status}). ${errorText}`.trim(), "err");
   } catch (err) {
-    setMsg("Network error. Check API_BASE and that the backend is online.", "err");
+    console.error("Fetch error:", err);
+    setMsg("Network error. Check connection, API_BASE, or backend status.", "err");
   } finally {
     btn.disabled = false;
   }
